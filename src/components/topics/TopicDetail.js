@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getTopicById } from '../../services/topicService';
 import { getResourcesByTopic } from '../../services/resourceService';
+import { AuthContext } from '../../contexts/AuthContext';
 import ResourceList from '../resources/ResourceList';
-import './TopicList.css';
+import { FaUpload } from 'react-icons/fa';
+import './TopicDetail.css';
 
 const TopicDetail = () => {
   const { topicId } = useParams();
@@ -11,6 +13,8 @@ const TopicDetail = () => {
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTopicAndResources = async () => {
@@ -35,6 +39,11 @@ const TopicDetail = () => {
     fetchTopicAndResources();
   }, [topicId]);
 
+  const handleUploadClick = () => {
+    // Navigate to upload page with topic ID in the URL
+    navigate(`/upload?topicId=${topicId}`);
+  };
+
   if (loading) {
     return <div className="loading-container">Loading topic resources...</div>;
   }
@@ -54,7 +63,14 @@ const TopicDetail = () => {
         <Link to="/" className="back-button">← Back to Topics</Link>
         <div className="topic-header-content">
           <div className="topic-header-icon">
-            <img src={`/assets/images/${topic.icon}`} alt={topic.name} />
+            <img 
+              src={`/assets/images/${topic.icon}`} 
+              alt={topic.name}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = '/assets/images/default-icon.png';
+              }}
+            />
           </div>
           <div className="topic-header-info">
             <h1>{topic.name}</h1>
@@ -64,12 +80,31 @@ const TopicDetail = () => {
       </div>
       
       <div className="topic-resources">
-        <h2>Available Resources</h2>
+        <div className="resources-header">
+          <h2>Available Resources</h2>
+          {user && user.isFacilitator && (
+            <button 
+              className="upload-resource-btn" 
+              onClick={handleUploadClick}
+            >
+              <FaUpload /> Upload Resource
+            </button>
+          )}
+        </div>
+        
         {resources.length > 0 ? (
           <ResourceList resources={resources} />
         ) : (
           <div className="no-resources">
             <p>No resources available for this topic yet.</p>
+            {user && user.isFacilitator && (
+              <button 
+                className="upload-first-resource-btn"
+                onClick={handleUploadClick}
+              >
+                Upload First Resource
+              </button>
+            )}
           </div>
         )}
       </div>

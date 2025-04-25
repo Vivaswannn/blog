@@ -1,61 +1,138 @@
-// Mock topic data - in a real app, this would be connected to a backend API
-const topics = [
-    {
-      id: 1,
-      name: 'React Fundamentals',
-      description: 'Learn the core concepts of React library',
-      icon: 'react-icon.png'
-    },
-    {
-      id: 2,
-      name: 'JavaScript Basics',
-      description: 'Foundation concepts of JavaScript programming',
-      icon: 'js-icon.png'
-    },
-    {
-      id: 3,
-      name: 'Web APIs',
-      description: 'Understanding and working with various web APIs',
-      icon: 'api-icon.png'
-    },
-    {
-      id: 4,
-      name: 'CSS and Styling',
-      description: 'Advanced styling techniques for web applications',
-      icon: 'css-icon.png'
-    }
-  ];
-  
-  export const getAllTopics = () => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([...topics]);
-      }, 500);
-    });
-  };
-  
-  export const getTopicById = (topicId) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const topic = topics.find(t => t.id === parseInt(topicId));
-        if (topic) {
-          resolve(topic);
-        } else {
-          reject(new Error('Topic not found'));
-        }
-      }, 300);
-    });
-  };
-  
-  export const addTopic = (topicData) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const newTopic = {
-          id: topics.length + 1,
-          ...topicData
+// Mock topic data with placeholder icons
+const mockTopics = [
+  {
+    id: '1',
+    name: 'React Fundamentals',
+    description: 'Learn the core concepts of React, components, props, and state management',
+    icon: 'react-icon.png',
+    createdAt: new Date('2023-12-10'),
+    createdBy: '2'
+  },
+  {
+    id: '2',
+    name: 'JavaScript Basics',
+    description: 'Master the fundamentals of JavaScript programming language',
+    icon: 'js-icon.png',
+    createdAt: new Date('2023-12-12'),
+    createdBy: '3'
+  },
+  {
+    id: '3',
+    name: 'Web APIs',
+    description: 'Explore how to work with various web APIs and integrate them in your applications',
+    icon: 'api-icon.png',
+    createdAt: new Date('2023-12-15'),
+    createdBy: '2'
+  },
+  {
+    id: '4',
+    name: 'CSS and Styling',
+    description: 'Learn modern CSS techniques, layouts, animations, and responsive design',
+    icon: 'css-icon.png',
+    createdAt: new Date('2023-12-18'),
+    createdBy: '3'
+  }
+];
+
+// Get all topics
+export const getAllTopics = async () => {
+  return new Promise((resolve) => {
+    // Simulate API delay
+    setTimeout(() => {
+      resolve([...mockTopics]);
+    }, 500);
+  });
+};
+
+// Get a single topic by ID
+export const getTopicById = async (topicId) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const topic = mockTopics.find(t => t.id === topicId);
+      if (topic) {
+        resolve({...topic});
+      } else {
+        reject(new Error('Topic not found'));
+      }
+    }, 500);
+  });
+};
+
+// Create a new topic
+export const createTopic = async (topicData) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const newTopic = {
+        id: Date.now().toString(),
+        ...topicData,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      mockTopics.push(newTopic);
+      resolve(newTopic);
+    }, 500);
+  });
+};
+
+// Update a topic
+export const updateTopic = async (topicId, topicData) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const index = mockTopics.findIndex(t => t.id === topicId);
+      if (index !== -1) {
+        const updatedTopic = {
+          ...mockTopics[index],
+          ...topicData,
+          updatedAt: new Date()
         };
-        topics.push(newTopic);
-        resolve(newTopic);
-      }, 500);
-    });
-  };
+        mockTopics[index] = updatedTopic;
+        resolve(updatedTopic);
+      } else {
+        reject(new Error('Topic not found'));
+      }
+    }, 500);
+  });
+};
+
+// Delete a topic
+export const deleteTopic = async (topicId) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const index = mockTopics.findIndex(t => t.id === topicId);
+      if (index !== -1) {
+        mockTopics.splice(index, 1);
+      }
+      resolve(true);
+    }, 500);
+  });
+};
+
+// Get topics by facilitator ID
+export const getTopicsByFacilitator = async (facilitatorId) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const filteredTopics = mockTopics.filter(t => t.createdBy === facilitatorId);
+      resolve([...filteredTopics]);
+    }, 500);
+  });
+};
+
+// Mock function for icon upload
+export const uploadTopicIcon = async (file) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const fileName = `topic-icon-${Date.now()}.png`;
+      const downloadURL = `/assets/images/${fileName}`;
+      resolve({ fileName, downloadURL });
+    }, 800);
+  });
+};
+
+// Mock function for icon deletion
+export const deleteTopicIcon = async (fileName) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, 300);
+  });
+};

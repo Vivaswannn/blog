@@ -1,7 +1,7 @@
 .topic-detail-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 30px 20px;
+    padding: 40px 20px;
   }
   
   .topic-header {
@@ -9,111 +9,167 @@
   }
   
   .back-button {
-    display: inline-block;
-    margin-bottom: 20px;
-    color: #4285f4;
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-secondary);
     text-decoration: none;
+    margin-bottom: 20px;
     font-weight: 500;
-    transition: color 0.3s;
+    transition: color 0.3s ease;
   }
   
   .back-button:hover {
-    color: #3367d6;
+    color: var(--primary-color);
   }
   
   .topic-header-content {
     display: flex;
     align-items: center;
-    background-color: white;
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    gap: 30px;
+    flex-wrap: wrap;
   }
   
   .topic-header-icon {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background-color: #f5f9ff;
+    background-color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    border: 3px solid var(--border-color);
     flex-shrink: 0;
   }
   
   .topic-header-icon img {
-    width: 60px;
-    height: 60px;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
+  .topic-header-info {
+    flex: 1;
+    min-width: 280px;
   }
   
   .topic-header-info h1 {
-    margin: 0 0 10px 0;
-    color: #333;
+    margin-bottom: 15px;
+    color: var(--text-primary);
   }
   
   .topic-header-info p {
-    margin: 0;
-    color: #666;
-    line-height: 1.5;
+    color: var(--text-secondary);
+    line-height: 1.6;
     font-size: 1.1rem;
   }
   
-  .topic-resources {
-    margin-top: 30px;
+  .resources-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
   }
   
-  .topic-resources h2 {
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
-    color: #333;
+  .resources-header h2 {
+    margin-bottom: 0;
+    color: var(--text-primary);
+  }
+  
+  .upload-resource-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 18px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-light);
+  }
+  
+  .upload-resource-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+  }
+  
+  .upload-resource-btn i {
+    font-size: 1.1rem;
   }
   
   .no-resources {
-    text-align: center;
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
     padding: 40px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
+    text-align: center;
+    box-shadow: var(--shadow-light);
+    color: var(--text-secondary);
   }
   
   .no-resources p {
-    color: #666;
+    margin-bottom: 25px;
     font-size: 1.1rem;
   }
   
-  .loading-container {
-    text-align: center;
-    padding: 50px;
-    font-size: 1.2rem;
-    color: #666;
+  .upload-first-resource-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-light);
+    margin: 0 auto;
   }
   
-  .error-container {
-    text-align: center;
-    padding: 30px;
-    color: #d32f2f;
-    background-color: #ffebee;
-    border-radius: 8px;
-    margin: 40px auto;
-    max-width: 600px;
+  .upload-first-resource-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
   }
   
   .back-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
     display: inline-block;
     margin-top: 15px;
-    color: #4285f4;
-    text-decoration: none;
+  }
+  
+  .back-link:hover {
+    text-decoration: underline;
   }
   
   @media (max-width: 768px) {
-    .topic-header-content {
-      flex-direction: column;
-      text-align: center;
+    .topic-detail-container {
+      padding: 30px 20px;
     }
     
-    .topic-header-icon {
-      margin-right: 0;
-      margin-bottom: 20px;
+    .topic-header-content {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 20px;
+    }
+    
+    .resources-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .upload-resource-btn {
+      width: 100%;
+      justify-content: center;
     }
   }
