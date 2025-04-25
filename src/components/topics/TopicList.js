@@ -3,6 +3,20 @@ import { Link } from 'react-router-dom';
 import { getAllTopics } from '../../services/topicService';
 import './TopicList.css';
 
+// Import icons directly - this is the most reliable method
+import reactIcon from '../../assets/icons/react-icon.png';
+import jsIcon from '../../assets/icons/js-icon.png';
+import apiIcon from '../../assets/icons/api-icon.png';
+import cssIcon from '../../assets/icons/css-icon.png';
+
+// Icon mapping
+const ICON_MAPPINGS = {
+  'React Fundamentals': reactIcon,
+  'JavaScript Basics': jsIcon,
+  'Web APIs': apiIcon,
+  'CSS and Styling': cssIcon
+};
+
 const TopicsList = () => {
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,7 +57,10 @@ const TopicsList = () => {
         {topics.map(topic => (
           <Link to={`/topics/${topic.id}`} className="topic-card" key={topic.id}>
             <div className="topic-icon">
-              <img src={`/assets/images/${topic.icon}`} alt={topic.name} />
+              <img 
+                src={ICON_MAPPINGS[topic.name]} 
+                alt={topic.name}
+              />
             </div>
             <h2>{topic.name}</h2>
             <p>{topic.description}</p>
