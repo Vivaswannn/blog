@@ -12,6 +12,7 @@ import TopicForm from './components/topics/TopicForm';
 import ResourceUpload from './components/resources/ResourceUpload';
 import ScrollToTop from './components/common/ScrollToTop';
 import Dashboard from './components/dashboard/Dashboard';
+import ErrorBoundary from './components/common/ErrorBoundary';
 
 // Pages
 import About from './components/pages/About';
@@ -25,112 +26,58 @@ import { AuthContext, AuthProvider } from './contexts/AuthContext';
 import { useContext } from 'react';
 
 // Protected route component
-const ProtectedRoute = ({ children }) => {
-  const { user } = useContext(AuthContext);
-  if (!user || !user.isFacilitator) {
-    return <Navigate to="/login" />;
+const ProtectedRoute = ({ children, requiredRole = 'facilitator' }) => {
+  const { user, isLoading } = useContext(AuthContext);
+
+  if (isLoading) {
+    return <div className="loading">Loading...</div>;
   }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (requiredRole === 'facilitator' && !user.isFacilitator) {
+    return <Navigate to="/" replace />;
+  }
+
   return children;
 };
 
 function App() {
   return (
+    <ErrorBoundary>
     <AuthProvider>
       <Router>
         <ScrollToTop />
-        <div className="app">
+          <div className="app-container">
           <Header />
           <main className="main-content">
             <Routes>
-              {/* Main routes */}
               <Route path="/" element={<TopicsList />} />
               <Route path="/login" element={<Login />} />
-              
-              {/* Topic routes - Order matters! More specific routes must come first */}
-              <Route 
-                path="/topics/new" 
-                element={
-                  <ProtectedRoute>
-                    <TopicForm onCancel={() => Navigate('/')} />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route path="/topics/:topicId" element={<TopicDetail />} />
-              <Route path="/topics" element={<TopicsList />} />
-              
-              {/* Facilitator routes */}
-              <Route 
-                path="/dashboard" 
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/upload" 
-                element={
+                <Route path="/topics/:topicId" element={<TopicDetail />} />
+                <Route path="/upload" element={
                   <ProtectedRoute>
                     <ResourceUpload />
                   </ProtectedRoute>
-                } 
-              />
-              
-              {/* Resource categories */}
-              <Route 
-                path="/categories" 
-                element={
-                  <PlaceholderPage 
-                    title="Resource Categories" 
-                    description="Browse educational resources by category. Filter by subject, grade level, and resource type." 
-                  />
-                } 
-              />
-              <Route 
-                path="/featured" 
-                element={
-                  <PlaceholderPage 
-                    title="Featured Resources" 
-                    description="Explore our handpicked collection of top-quality educational resources." 
-                  />
-                } 
-              />
-              <Route 
-                path="/latest" 
-                element={
-                  <PlaceholderPage 
-                    title="Latest Uploads" 
-                    description="See the most recently added educational resources from our community of educators." 
-                  />
-                } 
-              />
-              
-              {/* About pages */}
-              <Route path="/about" element={<About />} />
-              <Route path="/about/team" element={<About section="team" />} />
-              <Route path="/about/mission" element={<About section="mission" />} />
-              <Route path="/about/story" element={<About section="story" />} />
-              
-              {/* Support pages */}
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/help" element={<FAQ />} />
-              <Route path="/feedback" element={<Contact />} />
-              
-              {/* Legal pages */}
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Terms />} />
-              <Route path="/copyright" element={<Terms />} />
-              <Route path="/accessibility" element={<Terms />} />
-              
-              {/* Career page */}
-              <Route path="/careers" element={<About section="careers" />} />
+                } />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                } />
             </Routes>
           </main>
           <Footer />
         </div>
       </Router>
     </AuthProvider>
+    </ErrorBoundary>
   );
 }
 

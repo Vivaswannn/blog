@@ -161,10 +161,9 @@ a:focus {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  font-size: 16px;
+  min-height: 200px;
+  font-size: 1.2rem;
   color: var(--text-secondary);
-  position: relative;
 }
 
 .loading::after {
@@ -471,4 +470,29 @@ label {
   opacity: 1;
   transform: translateY(0);
   transition: opacity 300ms, transform 300ms;
+}
+
+.error-boundary {
+  padding: 2rem;
+  text-align: center;
+  background-color: var(--background-light);
+  border-radius: var(--border-radius);
+  margin: 2rem auto;
+  max-width: 600px;
+}
+
+.error-boundary h2 {
+  color: var(--error-color);
+  margin-bottom: 1rem;
+}
+
+.error-boundary details {
+  background-color: var(--background);
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  margin: 1rem 0;
+  text-align: left;
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
 }

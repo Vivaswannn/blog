@@ -1,93 +1,110 @@
-// Mock resource data - in a real app, this would be connected to a backend API
-let resources = [
-    {
-      id: 1,
-      title: 'Introduction to React',
-      description: 'Basics of React components and JSX',
-      fileType: 'pdf',
-      fileUrl: '/assets/mock/intro-to-react.pdf',
-      topicId: 1,
-      uploader: { id: 2, name: 'John Doe' },
-      uploadDate: '2023-12-15T10:30:00',
-      likes: 24
-    },
-    {
-      id: 2,
-      title: 'Advanced React Hooks',
-      description: 'Deep dive into React hooks',
-      fileType: 'pdf',
-      fileUrl: '/assets/mock/advanced-hooks.pdf',
-      topicId: 1,
-      uploader: { id: 3, name: 'Jane Smith' },
-      uploadDate: '2023-12-17T14:15:00',
-      likes: 18
-    },
-    {
-      id: 3,
-      title: 'JavaScript Fundamentals',
-      description: 'Core concepts of JavaScript language',
-      fileType: 'ppt',
-      fileUrl: '/assets/mock/js-fundamentals.ppt',
-      topicId: 2,
-      uploader: { id: 2, name: 'John Doe' },
-      uploadDate: '2023-12-10T09:45:00',
-      likes: 32
-    },
-    {
-      id: 4,
-      title: 'Building RESTful APIs',
-      description: 'How to design and implement REST APIs',
-      fileType: 'pdf',
-      fileUrl: '/assets/mock/restful-apis.pdf',
-      topicId: 3,
-      uploader: { id: 3, name: 'Jane Smith' },
-      uploadDate: '2023-12-12T16:20:00',
-      likes: 15
+const API_URL = 'http://localhost:5000/api';
+
+export const getAllResources = async () => {
+  try {
+    const response = await fetch(`${API_URL}/files`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch resources');
     }
-  ];
-  
-  export const getAllResources = () => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([...resources]);
-      }, 500);
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching resources:', error);
+    throw error;
+  }
+};
+
+export const getResourcesByTopic = async (topicId) => {
+  try {
+    const response = await fetch(`${API_URL}/files?topicId=${topicId}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch topic resources');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching topic resources:', error);
+    throw error;
+  }
+};
+
+export const uploadResource = async (file, topicId, userId) => {
+  try {
+    console.log('Preparing upload with:', {
+      fileName: file.name,
+      fileType: file.type,
+      fileSize: file.size,
+      topicId,
+      userId
     });
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('topicId', topicId);
+    formData.append('userId', userId);
+
+    console.log('Sending upload request to:', `${API_URL}/files/upload`);
+    
+    const response = await fetch(`${API_URL}/files/upload`, {
+      method: 'POST',
+      body: formData,
+      // Don't set Content-Type header, let the browser set it with the boundary
+    });
+
+    console.log('Upload response status:', response.status);
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Upload failed with status:', response.status, 'Error:', errorData);
+      throw new Error(errorData.error || 'Failed to upload resource');
+    }
+
+    const result = await response.json();
+    console.log('Upload successful:', result);
+    return result;
+  } catch (error) {
+    console.error('Upload error in resourceService:', error);
+    throw error;
+  }
   };
   
-  export const getResourcesByTopic = (topicId) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const filteredResources = resources.filter(r => r.topicId === parseInt(topicId));
-        resolve(filteredResources);
-      }, 500);
-    });
+export const downloadResource = async (fileId) => {
+  try {
+    const response = await fetch(`${API_URL}/files/${fileId}`);
+    if (!response.ok) {
+      throw new Error('Failed to download resource');
+    }
+    return response;
+  } catch (error) {
+    console.error('Error downloading resource:', error);
+    throw error;
+  }
   };
   
-  export const uploadResource = (resourceData) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const newResource = {
-          id: resources.length + 1,
-          ...resourceData,
-          likes: 0,
-          uploadDate: new Date().toISOString()
-        };
-        resources = [...resources, newResource];
-        resolve(newResource);
-      }, 800);
+export const deleteResource = async (fileId) => {
+  try {
+    const response = await fetch(`${API_URL}/files/${fileId}`, {
+      method: 'DELETE',
     });
+    if (!response.ok) {
+      throw new Error('Failed to delete resource');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error deleting resource:', error);
+    throw error;
+  }
   };
   
-  export const likeResource = (resourceId) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resources = resources.map(r => {
-          if (r.id === resourceId) {
-            return { ...r, likes: r.likes + 1 };
-          }
-          return r;
-        });
-        resolve(resources.find(r => r.id === resourceId));
-      }, 300);
+export const likeResource = async (fileId) => {
+  try {
+    const response = await fetch(`${API_URL}/files/${fileId}/like`, {
+      method: 'POST',
     });
+    if (!response.ok) {
+      throw new Error('Failed to like resource');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error liking resource:', error);
+    throw error;
+  }
   };
